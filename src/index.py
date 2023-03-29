@@ -1,20 +1,17 @@
+import requests
 from fastapi import FastAPI
-
-from src.dtos.ISayHelloDto import ISayHelloDto
+from fastapi.responses import RedirectResponse
 
 app = FastAPI()
 
 
 @app.get("/")
 async def root():
-    return {"message": "Hello World"}
+    return "Hello World!"
 
 
-@app.get("/hello/{name}")
-async def say_hello(name: str):
-    return {"message": f"Hello {name}"}
-
-
-@app.post("/hello")
-async def hello_message(dto: ISayHelloDto):
-    return {"message": f"Hello {dto.message}"}
+@app.get("/bing/daily")
+async def bing():
+    response = requests.get("https://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1")
+    image_url = "https://www.bing.com" + response.json()["images"][0]["url"]
+    return RedirectResponse(url=image_url)
